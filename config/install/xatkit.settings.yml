@@ -1,0 +1,9 @@
+xatkit:
+  serverUrl: 'https://prod.xatkit.com/wordpress/custom/xat-bot/chat-handler'
+  serverStart: FALSE
+  windowTitle: ''
+  windowSubtitle: ''
+  altLogo: ''
+  color: ''
+  language: ''
+

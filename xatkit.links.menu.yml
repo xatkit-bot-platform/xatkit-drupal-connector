@@ -1,0 +1,14 @@
+xatkit.index:
+  title: Chatbot
+  description: Chatbot configuration.
+  parent: system.admin_config
+  route_name: xatkit.index
+  weight: 150
+
+xatkit.admin:
+  title: 'Xatkit Configuration'
+  description: 'Xatkit Configuration'
+  parent: xatkit.index
+  route_name: xatkit.config
+  weight: 20
+

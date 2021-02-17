@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Xatkit module file.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function xatkit_theme($existing, $type, $theme, $path) {
+  return [
+    'xatkit' => [
+      'template' => 'xatkit-display',
+      'variables' => [
+        'variables' => [],
+      ],
+    ],
+  ];
+}
+
