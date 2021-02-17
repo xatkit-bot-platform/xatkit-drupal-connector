@@ -1,0 +1,9 @@
+xatkit-assets:
+  version: 1.x
+  css:
+    theme:
+      assets/css/xatkit.min.css: {}
+  js:
+    assets/js/xatkit.min.js: {}
+    assets/js/xatkit-activate.js: {}
+

@@ -5,7 +5,7 @@ namespace Drupal\xatkit\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 
 /**
- * Provides a 'testBlock' block.
+ * Provides a 'Xatkit' block.
  *
  * @Block(
  *  id = "xatkit_block",
@@ -18,15 +18,8 @@ class XatkitBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-
     return [
       '#theme' => 'xatkit',
-      '#variables' => '',
-      '#attached' => [
-        'library' => [
-          'xatkit/xatkit-assets',
-        ],
-      ],
     ];
   }
 
