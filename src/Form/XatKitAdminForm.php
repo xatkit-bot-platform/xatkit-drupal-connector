@@ -95,8 +95,7 @@ class XatKitAdminForm extends ConfigFormBase {
     ];
     $form['server_conf']['xatkitStart'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('URL of the Xatkit Server'),
-      '#description' => $this->t('Do NOT change unless you have deployed your own server'),
+      '#title' => $this->t('Start communications with server'),
       '#default_value' => $config->get('xatkit.serverStart'),
     ];
 
