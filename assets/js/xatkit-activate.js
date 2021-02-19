@@ -1,8 +1,18 @@
-xatkit.renderXatkitWidget({
-  "server": "https://prod.xatkit.com/wordpress/custom/xat-bot/chat-handler",
-  "username": "Alice",
-  "storage": {
-    "autoClear": true
+(function ($, Drupal, drupalSettings) {
+  Drupal.behaviors.yourbehavior = {
+    attach: function (context, settings) {
+      console.log(drupalSettings.xatkit);
+      xatkit.renderXatkitWidget({
+        "server": drupalSettings.xatkit.server,
+        "username": "Alice",
+        "widget": {
+          title: drupalSettings.xatkit.title,
+          subtitle: drupalSettings.xatkit.subtitle,
+         },
+        "storage": {
+          "autoClear": true
+        }
+      });
+    }
   }
-})
-
+})(jQuery, Drupal, drupalSettings);
