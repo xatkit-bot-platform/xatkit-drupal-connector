@@ -6,4 +6,7 @@ xatkit-assets:
   js:
     assets/js/xatkit.min.js: {}
     assets/js/xatkit-activate.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
 
