@@ -3,7 +3,7 @@
 namespace Drupal\xatkit\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal;
+use Drupal\file\Entity\File;
 
 /**
  * Provides a 'Xatkit' block.
@@ -20,6 +20,22 @@ class XatkitBlock extends BlockBase {
    */
   public function build() {
     $config = \Drupal::service('config.factory')->getEditable('xatkit.settings');
+
+    $xatkitSettings = [
+      'server' => $config->get('xatkit.serverUrl'),
+      'title' => $config->get('xatkit.windowTitle'),
+      'subtitle' => $config->get('xatkit.windowSubtitle'),
+    ];
+
+    $image = $config->get('xatkit.altLogo');
+    $file = File::load($image[0]);
+    $imageUrl = file_create_url($file->getFileUri());
+
+    if (!empty($imageUrl)) {
+      $xatkitSettings['profileAvatar'] = $imageUrl;
+      $xatkitSettings['launcherImage'] = $imageUrl;
+    }
+    kint($xatkitSettings);
     return [
       '#type' => 'html',
       '#theme' => 'xatkit',
@@ -28,11 +44,7 @@ class XatkitBlock extends BlockBase {
           'xatkit/xatkit-assets',
         ],
         'drupalSettings' => [
-          'xatkit' => [
-            'server' => $config->get('xatkit.serverUrl'),
-            'title' => $config->get('xatkit.windowTitle'),
-            'subtitle' => $config->get('xatkit.windowSubtitle'),
-          ],
+          'xatkit' => $xatkitSettings,
         ],
       ],
     ];

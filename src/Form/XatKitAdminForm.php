@@ -16,6 +16,7 @@ use GuzzleHttp\Client;
 use Drupal\xatkit\Controller\Api;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\file\Entity\File;
 
 /**
  * MealPlanner form Class.
@@ -119,10 +120,11 @@ class XatKitAdminForm extends ConfigFormBase {
       '#required' => FALSE,
     ];
     $form['bot_conf']['alternativeLogo'] = [
-      '#type' => 'textfield',
+      '#type' => 'managed_file',
       '#title' => $this->t('Alternative Logo'),
       '#description' => $this->t('Ideal size 46x46'),
       '#default_value' => $config->get('xatkit.altLogo'),
+      '#upload_location' => 'public://xatkit/',
       '#required' => FALSE,
     ];
     $form['bot_conf']['customColor'] = [
@@ -175,7 +177,13 @@ class XatKitAdminForm extends ConfigFormBase {
     $config->set('xatkit.serverStart', $this->getValue($form_state, 'xatkitStart'));
     $config->set('xatkit.windowTitle', $form_state->getValue('windowTitle'));
     $config->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'));
+
+    $fid = reset($form_state->getValue('alternativeLogo'));
+    $file = File::load($fid);
+    $file->setPermanent();
+    $file->save();
     $config->set('xatkit.altLogo', $form_state->getValue('alternativeLogo'));
+
     $config->set('xatkit.color', $form_state->getValue('customColor'));
     $config->set('xatkit.language', $form_state->getValue('languageSelect'));
 
