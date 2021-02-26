@@ -10,13 +10,9 @@ namespace Drupal\xatkit\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Serialization\Json;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Client;
-use Drupal\xatkit\Controller\Api;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\file\Entity\File;
+use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * MealPlanner form Class.
@@ -30,25 +26,18 @@ class XatKitAdminForm extends ConfigFormBase {
    */
   protected $configFactory;
   /**
-   * Serialization service.
+   * Entity manager service.
    *
-   * @var \Drupal\Component\Serialization\Json
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
-  protected $serialization;
-  /**
-   * Serialization service.
-   *
-   * @var \Drupal\Component\Serialization\Json
-   */
-  protected $client;
+  protected $entityTypeManager;
 
   /**
    * Construct method.
    */
-  public function __construct(ConfigFactory $configFactory, Json $serialization, Client $client) {
+  public function __construct(ConfigFactory $configFactory, EntityTypeManager $entity_type_manager) {
     $this->configFactory = $configFactory;
-    $this->serialization = $serialization;
-    $this->client = $client;
+    $this->entityTypeManager = $entity_type_manager;
 
   }
 
@@ -59,8 +48,7 @@ class XatKitAdminForm extends ConfigFormBase {
     // SET DEPENDENCY INJECTION.
     return new static(
       $container->get('config.factory'),
-      $container->get('serialization.json'),
-      $container->get('http_client'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -179,7 +167,7 @@ class XatKitAdminForm extends ConfigFormBase {
     $config->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'));
 
     $fid = reset($form_state->getValue('alternativeLogo'));
-    $file = File::load($fid);
+    $file = $this->entityTypeManager->getStorage('file')->load($fid);
     $file->setPermanent();
     $file->save();
     $config->set('xatkit.altLogo', $form_state->getValue('alternativeLogo'));

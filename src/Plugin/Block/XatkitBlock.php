@@ -3,7 +3,10 @@
 namespace Drupal\xatkit\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\file\Entity\File;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Config\ConfigFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
 /**
  * Provides a 'Xatkit' block.
@@ -13,29 +16,58 @@ use Drupal\file\Entity\File;
  *  admin_label = @Translation("Chatbot: Xatkit"),
  * )
  */
-class XatkitBlock extends BlockBase {
+class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * Configuration state Drupal Site.
+   *
+   * @var \Drupal\Core\Config\ConfigFactory
+   */
+  protected $configFactory;
+  /**
+   * File Usage serivce.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Construct method.
+   */
+  public function __construct(ConfigFactory $configFactory, EntityTypeManager $entity_type_manager) {
+    $this->configFactory = $configFactory;
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
+   * Create method.
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * {@inheritdoc}
    */
   public function build() {
-    $config = \Drupal::service('config.factory')->getEditable('xatkit.settings');
-
+    $config = $this->configFactory->getEditable('xatkit.settings');
     $xatkitSettings = [
       'server' => $config->get('xatkit.serverUrl'),
       'title' => $config->get('xatkit.windowTitle'),
       'subtitle' => $config->get('xatkit.windowSubtitle'),
     ];
-
-    $image = $config->get('xatkit.altLogo');
-    $file = File::load($image[0]);
+    // If alternative logo is set.
+    $altLogo = $config->get('xatkit.altLogo');
+    $file = $this->entityTypeManager->getStorage('file')->load($altLogo[0]);
     $imageUrl = file_create_url($file->getFileUri());
-
     if (!empty($imageUrl)) {
       $xatkitSettings['profileAvatar'] = $imageUrl;
       $xatkitSettings['launcherImage'] = $imageUrl;
     }
-    kint($xatkitSettings);
+    // Attach settings and libraries to the block.
     return [
       '#type' => 'html',
       '#theme' => 'xatkit',
