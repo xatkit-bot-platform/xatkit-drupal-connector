@@ -115,6 +115,13 @@ class XatKitAdminForm extends ConfigFormBase {
       '#upload_location' => 'public://xatkit/',
       '#required' => FALSE,
     ];
+    $form['bot_conf']['rtl'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Do you want to display the bot at the left?'),
+      '#description' => $this->t('For RTL langaguges please select this option'),
+      '#default_value' => $config->get('xatkit.rtl'),
+      '#required' => FALSE,
+    ];
     $form['bot_conf']['customColor'] = [
       '#type' => 'color',
       '#title' => $this->t('Window customn color'),
@@ -165,6 +172,7 @@ class XatKitAdminForm extends ConfigFormBase {
     $config->set('xatkit.serverStart', $this->getValue($form_state, 'xatkitStart'));
     $config->set('xatkit.windowTitle', $form_state->getValue('windowTitle'));
     $config->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'));
+    $config->set('xatkit.rtl', $form_state->getValue('rtl'));
 
     $fid = reset($form_state->getValue('alternativeLogo'));
     $file = $this->entityTypeManager->getStorage('file')->load($fid);
@@ -176,6 +184,7 @@ class XatKitAdminForm extends ConfigFormBase {
     $config->set('xatkit.language', $form_state->getValue('languageSelect'));
 
     $config->save();
+    $this->messenger()->addStatus($this->t('Please, remember Clear the Caches in order to see the changes applied'));
     return parent::submitForm($form, $form_state);
   }
 

@@ -23,7 +23,15 @@
             "autoClear": true
           }
         });
+        console.log(drupalSettings.xatkit.rtl);
+        if (drupalSettings.xatkit.rtl == 1) {
+          $('.xatkit-widget-container > .xatkit-launcher').css('align-self', 'unset');
+          $('.xatkit-widget-container').css('right', 'unset');
+          $('.xatkit-widget-container').css('margin', '0 0 20px 20px');
+        }
       });
+
+
     }
   }
 })(jQuery, Drupal, drupalSettings);
