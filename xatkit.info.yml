@@ -2,7 +2,6 @@ name: Xatkit Integration
 description: Xatkit Integration module. A ease-way to integrate and build your chatbot
 package: 'Chatbots'
 type: module
-version: 8.x-1.0.0
 core: 8.x
 core_version_requirement: '^8 || ^9'
 configure: xatkit.admin.form

@@ -11,4 +11,3 @@ xatkit.admin:
   parent: xatkit.index
   route_name: xatkit.config
   weight: 20
-

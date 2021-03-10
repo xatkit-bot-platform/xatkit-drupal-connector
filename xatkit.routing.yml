@@ -4,7 +4,7 @@ xatkit.index:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
     _title: 'Chatbots'
   requirements:
-    _permission: 'access administration pages'
+    _permission: 'administer site configuration'
 xatkit.config:
   path: '/admin/xatkit/config'
   defaults:

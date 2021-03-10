@@ -38,7 +38,6 @@ class XatKitAdminForm extends ConfigFormBase {
   public function __construct(ConfigFactory $configFactory, EntityTypeManager $entity_type_manager) {
     $this->configFactory = $configFactory;
     $this->entityTypeManager = $entity_type_manager;
-
   }
 
   /**

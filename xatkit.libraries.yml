@@ -9,4 +9,3 @@ xatkit-assets:
   dependencies:
     - core/drupal
     - core/jquery
-
