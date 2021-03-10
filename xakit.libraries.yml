@@ -1,7 +1,0 @@
-xatkit-assets:
-  version: 1.x
-  js:
-    assets/js/xatkit.min.js: {}
-  css:
-    assets/css/xatkit.min.css: {}
-

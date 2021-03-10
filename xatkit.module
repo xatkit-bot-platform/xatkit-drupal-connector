@@ -1,11 +1,11 @@
 <?php
 
-use Drupal\Component\Utility\Html;
-
 /**
  * @file
  * Xatkit module file.
  */
+
+use Drupal\Component\Utility\Html;
 
 /**
  * Implements hook_theme().
