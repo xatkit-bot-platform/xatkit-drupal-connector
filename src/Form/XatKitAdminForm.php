@@ -121,6 +121,13 @@ class XatKitAdminForm extends ConfigFormBase {
       '#default_value' => $config->get('xatkit.color'),
       '#required' => FALSE,
     ];
+
+    $form['bot_conf']['left'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Should the widget be at the left?'),
+      '#default_value' => $config->get('xatkit.rtl'),
+    ];
+
     $form['bot_conf']['languageSelect'] = [
       '#type' => 'language_select',
       '#title' => $this->t('Language'),
@@ -170,11 +177,13 @@ class XatKitAdminForm extends ConfigFormBase {
     $file->setPermanent();
     $file->save();
     $config->set('xatkit.altLogo', $form_state->getValue('alternativeLogo'));
-
     $config->set('xatkit.color', $form_state->getValue('customColor'));
+    $config->set('xatkit.rtl', $form_state->getValue('left'));
     $config->set('xatkit.language', $form_state->getValue('languageSelect'));
 
     $config->save();
+
+    drupal_flush_all_caches();
     return parent::submitForm($form, $form_state);
   }
 

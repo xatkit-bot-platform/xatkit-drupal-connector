@@ -2,10 +2,10 @@ xatkit-assets:
   version: 1.x
   css:
     theme:
-      assets/css/xatkit.min.css: {}
+      assets/css/xatkit.min.css: {minified: true}
       assets/css/xatkit-custom.css: {}
   js:
-    assets/js/xatkit.min.js: {}
+    assets/js/xatkit.min.js: {minified: true}
     assets/js/xatkit-activate.js: {}
   dependencies:
     - core/drupal
