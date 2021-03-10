@@ -71,6 +71,7 @@ function customStyle () {
           }
           .xatkit-widget-container {
               right: unset !important;
+              left: 0;
               margin: 0 0 20px 20px !important;
           }`;
   }
