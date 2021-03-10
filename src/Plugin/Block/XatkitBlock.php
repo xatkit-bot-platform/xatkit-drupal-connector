@@ -70,11 +70,13 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
     }
     // If alternative logo is set.
     $altLogo = $config->get('xatkit.altLogo');
-    $file = $this->entityTypeManager->getStorage('file')->load($altLogo[0]);
-    $imageUrl = file_create_url($file->getFileUri());
-    if (!empty($imageUrl)) {
-      $xatkitSettings['profileAvatar'] = $imageUrl;
-      $xatkitSettings['launcherImage'] = $imageUrl;
+    if ($altLogo) {
+      $file = $this->entityTypeManager->getStorage('file')->load($altLogo[0]);
+      $imageUrl = file_create_url($file->getFileUri());
+      if (!empty($imageUrl)) {
+        $xatkitSettings['profileAvatar'] = $imageUrl;
+        $xatkitSettings['launcherImage'] = $imageUrl;
+      }
     }
     // Attach settings and libraries to the block.
     return [
@@ -86,14 +88,11 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
       '#attached' => [
         'library' => [
           'xatkit/xatkit-assets',
+          'xatkit/xatkit-widget',
         ],
         'drupalSettings' => [
           'xatkit' => $xatkitSettings,
         ],
-      ],
-      [
-        '#tag' => 'style',
-        '#value' => '.tititi { background: ' . $color . '; }',
       ],
     ];
   }

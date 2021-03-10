@@ -171,12 +171,16 @@ class XatKitAdminForm extends ConfigFormBase {
     $config->set('xatkit.serverStart', $this->getValue($form_state, 'xatkitStart'));
     $config->set('xatkit.windowTitle', $form_state->getValue('windowTitle'));
     $config->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'));
-
-    $fid = reset($form_state->getValue('alternativeLogo'));
-    $file = $this->entityTypeManager->getStorage('file')->load($fid);
-    $file->setPermanent();
-    $file->save();
-    $config->set('xatkit.altLogo', $form_state->getValue('alternativeLogo'));
+    if (!empty($form_state->getValue('alternativeLogo'))) {
+      $fid = reset($form_state->getValue('alternativeLogo'));
+      $file = $this->entityTypeManager->getStorage('file')->load($fid);
+      $file->setPermanent();
+      $file->save();
+      $config->set('xatkit.altLogo', $form_state->getValue('alternativeLogo'));
+    }
+    else {
+      $config->set('xatkit.altLogo', FALSE);
+    }
     $config->set('xatkit.color', $form_state->getValue('customColor'));
     $config->set('xatkit.rtl', $form_state->getValue('left'));
     $config->set('xatkit.language', $form_state->getValue('languageSelect'));

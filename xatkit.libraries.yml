@@ -5,8 +5,16 @@ xatkit-assets:
       assets/css/xatkit.min.css: {minified: true}
       assets/css/xatkit-custom.css: {}
   js:
-    assets/js/xatkit.min.js: {minified: true}
     assets/js/xatkit-activate.js: {}
   dependencies:
     - core/drupal
     - core/jquery
+xatkit-widget:
+  remote: https://xatkit.com/widget/xatkit.min.js
+  version: 1.0
+  license:
+    name: MIT
+    url: https://xatkit.com/
+    gpl-compatible: true
+  js:
+    https://xatkit.com/widget/xatkit.min.js: {type: external, minified: true}
