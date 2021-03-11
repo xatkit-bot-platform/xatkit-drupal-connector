@@ -26,7 +26,7 @@ function xatkit_theme($existing, $type, $theme, $path) {
  */
 function xatkit_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
   switch ($route_name) {
-    case 'help.page.MYMODULE':
+    case 'help.page.xatkit':
       $text = file_get_contents(__DIR__ . '/README.md');
       if (!\Drupal::moduleHandler()->moduleExists('markdown')) {
         return '<pre>' . Html::escape($text) . '</pre>';

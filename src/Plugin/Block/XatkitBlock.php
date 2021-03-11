@@ -58,16 +58,7 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
       'server' => $config->get('xatkit.serverUrl'),
       'title' => $config->get('xatkit.windowTitle'),
       'subtitle' => $config->get('xatkit.windowSubtitle'),
-      'color' => $config->get('xatkit.color'),
-      'left' => $config->get('xatkit.rtl'),
     ];
-    if ($config->get('xatkit.color') != NULL) {
-      $color = $config->get('xatkit.color');
-
-    }
-    else {
-      $color = FALSE;
-    }
     // If alternative logo is set.
     $altLogo = $config->get('xatkit.altLogo');
     if ($altLogo) {
@@ -79,11 +70,13 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
       }
     }
     // Attach settings and libraries to the block.
+    kint($config->get('xatkit.rtl'));
     return [
       '#type' => 'html',
       '#theme' => 'xatkit',
       '#variables' => [
-        'color' => $color,
+        'color' => $config->get('xatkit.color'),
+        'left' => $config->get('xatkit.rtl'),
       ],
       '#attached' => [
         'library' => [
