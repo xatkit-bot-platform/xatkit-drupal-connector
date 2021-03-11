@@ -11,20 +11,16 @@ namespace Drupal\xatkit\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Component\Serialization\Json;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * MealPlanner form Class.
  */
 class XatKitAdminForm extends ConfigFormBase {
 
-  /**
-   * Configuration state Drupal Site.
-   *
-   * @var \Drupal\Core\Config\ConfigFactory
-   */
-  protected $configFactory;
   /**
    * Entity manager service.
    *
@@ -35,8 +31,7 @@ class XatKitAdminForm extends ConfigFormBase {
   /**
    * Construct method.
    */
-  public function __construct(ConfigFactory $configFactory, EntityTypeManager $entity_type_manager) {
-    $this->configFactory = $configFactory;
+  public function __construct(EntityTypeManager $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
   }
 
@@ -46,7 +41,6 @@ class XatKitAdminForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     // SET DEPENDENCY INJECTION.
     return new static(
-      $container->get('config.factory'),
       $container->get('entity_type.manager')
     );
   }
@@ -65,7 +59,7 @@ class XatKitAdminForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $config = $this->configFactory->getEditable('xatkit.settings');
+    $config = $this->config('xatkit.settings');
     $form = parent::buildForm($form, $form_state);
 
     $form['server_conf'] = [
@@ -121,13 +115,11 @@ class XatKitAdminForm extends ConfigFormBase {
       '#default_value' => $config->get('xatkit.color'),
       '#required' => FALSE,
     ];
-
     $form['bot_conf']['left'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Should the widget be at the left?'),
       '#default_value' => $config->get('xatkit.rtl'),
     ];
-
     $form['bot_conf']['languageSelect'] = [
       '#type' => 'language_select',
       '#title' => $this->t('Language'),
@@ -146,17 +138,36 @@ class XatKitAdminForm extends ConfigFormBase {
    *   The unique string identifying the form.
    */
   public function getFormId() {
-    return 'mealplanner_form';
+    return 'xatkit_form';
   }
 
   /**
    * Example data to check if the provided settings are okay.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $validation = TRUE;
-    if ($validation != FALSE) {
+
+    // We check the /status endpoint of the service.
+    $baseUrl = $form_state->getValue('xatkitServer');
+    $pos = strpos($baseUrl, '/chat-handler');
+    if ($pos != FALSE) {
+      $baseUrl = substr($baseUrl, 0, $pos);
     }
-    else {
+    $client = new Client([
+      'headers' => [],
+    ]);
+    try {
+      $response = $client->request('GET',
+        $baseUrl . '/status', [
+          ['http_errors' => FALSE],
+        ]);
+      if ($response->getStatusCode() == '200') {
+        // Bot is on!.
+      }
+      else {
+        $form_state->setErrorByName('xatkitServer', $this->t('It seems there is a problem with server URL'));
+      };
+    }
+    catch (RequestException $e) {
       $form_state->setErrorByName('xatkitServer', $this->t('Server URL is not correct, please fit it'));
     }
   }
@@ -166,11 +177,15 @@ class XatKitAdminForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    $config = $this->configFactory->getEditable('xatkit.settings');
-    $config->set('xatkit.serverUrl', $this->getValue($form_state, 'xatkitServer'));
-    $config->set('xatkit.serverStart', $this->getValue($form_state, 'xatkitStart'));
-    $config->set('xatkit.windowTitle', $form_state->getValue('windowTitle'));
-    $config->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'));
+    $config = $this->config('xatkit.settings');
+    $config->set('xatkit.serverUrl', $form_state->getValue('xatkitServer'))
+      ->set('xatkit.serverStart', $form_state->getValue('xatkitStart'))
+      ->set('xatkit.windowTitle', $form_state->getValue('windowTitle'))
+      ->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'))
+      ->set('xatkit.color', $form_state->getValue('customColor'))
+      ->set('xatkit.rtl', $form_state->getValue('left'))
+      ->set('xatkit.language', $form_state->getValue('languageSelect'));
+    // Saving logo if uploaded.
     if (!empty($form_state->getValue('alternativeLogo'))) {
       $fid = reset($form_state->getValue('alternativeLogo'));
       $file = $this->entityTypeManager->getStorage('file')->load($fid);
@@ -181,10 +196,6 @@ class XatKitAdminForm extends ConfigFormBase {
     else {
       $config->set('xatkit.altLogo', FALSE);
     }
-    $config->set('xatkit.color', $form_state->getValue('customColor'));
-    $config->set('xatkit.rtl', $form_state->getValue('left'));
-    $config->set('xatkit.language', $form_state->getValue('languageSelect'));
-
     $config->save();
 
     drupal_flush_all_caches();

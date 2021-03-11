@@ -70,7 +70,6 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
       }
     }
     // Attach settings and libraries to the block.
-    kint($config->get('xatkit.rtl'));
     return [
       '#type' => 'html',
       '#theme' => 'xatkit',
