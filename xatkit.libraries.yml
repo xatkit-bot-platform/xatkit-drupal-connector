@@ -17,7 +17,8 @@ xatkit-widget:
     url: https://xatkit.com/
     gpl-compatible: true
   css:
-    theme: https://xatkit.com/widget/xatkit.min.css: {type: external , minified: true}
+    theme:
+      https://xatkit.com/widget/xatkit.min.css: {type: external, minified: true}
 
   js:
     https://xatkit.com/widget/xatkit.min.js: {type: external, minified: true}
