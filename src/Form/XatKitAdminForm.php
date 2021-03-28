@@ -61,6 +61,7 @@ class XatKitAdminForm extends ConfigFormBase {
     $config = $this->config('xatkit.settings');
     $form = parent::buildForm($form, $form_state);
 
+
     $form['server_conf'] = [
       '#type'        => 'fieldset',
       '#title'       => $this->t('Configure your bot connexion'),
@@ -74,10 +75,34 @@ class XatKitAdminForm extends ConfigFormBase {
       '#default_value' => $config->get('xatkit.serverUrl'),
       '#required' => TRUE,
     ];
-    $form['server_conf']['xatkitStart'] = [
+    $form['server_conf']['type'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Start communications with server'),
-      '#default_value' => $config->get('xatkit.serverStart'),
+      '#title' => $this->t('Is yout bot deployed locally?'),
+      '#default_value' => $config->get('xatkit.type'),
+      '#attributes' => [
+        'id' => 'type',
+      ],
+    ];
+
+    $form['server_conf']['customPort'] = [
+      '#title' => $this->t('Custom local port'),
+      '#description' => $this->t('Only if you have specified a custom local port to deploy your bot'),
+      '#type' => 'textfield',
+      '#size' => '60',
+      '#default_value' => $config->get('xatkit.customPort'),
+      '#placeholder' => 'Default: localhost:5001',
+      '#default_value' => '5001',
+      '#attributes' => [
+        'id' => 'custom-port',
+      ],
+      '#states' => [
+        //show this textfield only if the radio 'other' is selected above
+        'visible' => [
+          //don't mistake :input for the type of field. You'll always use
+          //:input here, no matter whether your source is a select, radio or checkbox element.
+          ':input[name="type"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     $form['bot_conf'] = [
@@ -147,6 +172,9 @@ class XatKitAdminForm extends ConfigFormBase {
 
     // We check the /status endpoint of the service.
     $baseUrl = $form_state->getValue('xatkitServer');
+    if (strpos($baseUrl, 'http') !== 0) {
+      $form_state->setErrorByName('xatkitServer', $this->t('Please, specify http protocol'));
+    }
     $pos = strpos($baseUrl, '/chat-handler');
     if ($pos != FALSE) {
       $baseUrl = substr($baseUrl, 0, $pos);
@@ -175,10 +203,11 @@ class XatKitAdminForm extends ConfigFormBase {
    * Example data to check if the provided settings are okay.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
+    //kint($form_state);
     $config = $this->config('xatkit.settings');
     $config->set('xatkit.serverUrl', $form_state->getValue('xatkitServer'))
-      ->set('xatkit.serverStart', $form_state->getValue('xatkitStart'))
+      ->set('xatkit.type', $form_state->getValue('type'))
+      ->set('xatkit.customPort', $form_state->getValue('customPort'))
       ->set('xatkit.windowTitle', $form_state->getValue('windowTitle'))
       ->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'))
       ->set('xatkit.color', $form_state->getValue('customColor'))

@@ -54,8 +54,20 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function build() {
     $config = $this->configFactory->getEditable('xatkit.settings');
+    if ($config->get('xatkit.type') == 1) {
+      $pos = strrpos($config->get('xatkit.serverUrl'), ':');
+      if ($pos != FALSE) {
+        $server = substr($config->get('xatkit.serverUrl'), 0, $pos) . ':' . $config->get('xatkit.customPort');
+      }
+      else {
+        $server = $config->get('xatkit.serverUrl') . ':' . $config->get('xatkit.customPort');
+      }
+    }
+    else {
+      $server = $config->get('xatkit.serverUrl');
+    }
     $xatkitSettings = [
-      'server' => $config->get('xatkit.serverUrl'),
+      'server' => $server,
       'title' => $config->get('xatkit.windowTitle'),
       'subtitle' => $config->get('xatkit.windowSubtitle'),
     ];
