@@ -70,6 +70,7 @@ class XatkitBlock extends BlockBase implements ContainerFactoryPluginInterface {
       'server' => $server,
       'title' => $config->get('xatkit.windowTitle'),
       'subtitle' => $config->get('xatkit.windowSubtitle'),
+      'minimized' => $config->get('xatkit.minim'),
     ];
     // If alternative logo is set.
     $altLogo = $config->get('xatkit.altLogo');

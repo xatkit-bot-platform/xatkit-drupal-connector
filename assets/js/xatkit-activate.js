@@ -11,10 +11,17 @@
         else {
           logos = {}
         }
+        if (drupalSettings.xatkit.title == 1) {
+          minimized = true
+        }
+        else {
+          minimized = false
+        }
         xatkit.renderXatkitWidget({
           "server": drupalSettings.xatkit.server,
           "username": "Alice",
           "widget": {
+            startMinimized: minimized,
             title: drupalSettings.xatkit.title,
             subtitle: drupalSettings.xatkit.subtitle,
             images: logos

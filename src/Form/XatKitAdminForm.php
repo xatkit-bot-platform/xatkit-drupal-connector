@@ -139,6 +139,13 @@ class XatKitAdminForm extends ConfigFormBase {
       '#default_value' => $config->get('xatkit.color'),
       '#required' => FALSE,
     ];
+
+    $form['bot_conf']['minim'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Start minimized?'),
+      '#default_value' => $config->get('xatkit.minim'),
+    ];
+
     $form['bot_conf']['left'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Should the widget be at the left?'),
@@ -211,6 +218,7 @@ class XatKitAdminForm extends ConfigFormBase {
       ->set('xatkit.windowTitle', $form_state->getValue('windowTitle'))
       ->set('xatkit.windowSubtitle', $form_state->getValue('windowSubtitle'))
       ->set('xatkit.color', $form_state->getValue('customColor'))
+      ->set('xatkit.minim', $form_state->getValue('minim'))
       ->set('xatkit.rtl', $form_state->getValue('left'))
       ->set('xatkit.language', $form_state->getValue('languageSelect'));
     // Saving logo if uploaded.
